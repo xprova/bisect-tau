@@ -1,0 +1,8 @@
+Runused Nunused 0 1k
+
+vclk1 clk1 0 pulse ( CLK_VOLTAGE 0 0.5ns 50ps 50ps 1s 2s)
+
+.PARAM DATA_VOLTAGE=0.99
+.PARAM CLK_VOLTAGE=1
+.PARAM RESET_VOLTAGE=1
+
