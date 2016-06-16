@@ -26,6 +26,14 @@ if ~skipChecks
     
 end
 
+% prepare output directory
+
+if ~exist('output', 'dir')
+    
+    mkdir('output');
+    
+end
+
 % prepare figure
 
 clf; drawnow
@@ -100,12 +108,6 @@ end
 
 function [t, q, qn] = simSpice(d_time)
 
-if ~exist('output', 'dir')
-    
-    mkdir('output');
-    
-end
-
 fid = fopen('bisection-params.cir', 'w');
 
 fprintf(fid, '.param d_time = %1.10fn', d_time / 1e-9);
@@ -129,5 +131,11 @@ qn_ind = getSignalIndex(sigNames, 'qn');
 q = signals(q_ind, :);
 
 qn = signals(qn_ind, :);
+
+end
+
+function y = getSignalIndex(sigNames, signal)
+
+y = find(strcmp(sigNames, signal));
 
 end

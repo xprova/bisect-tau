@@ -1,21 +1,15 @@
-* Sample latch circuit
-
-.include "./ptm_45nm/modelcard.nmos"
-.include "./ptm_45nm/modelcard.pmos"
-.include "./example-dut/sync_comps_45nm.cir"
 .include "./bisection-params.cir"
 
 .GLOBAL vdd
 
 .param reset_time 	= 1n
 .param clk_time 	= 5n
-.param vdd_voltage 	= 1
 
 * Supply voltage:
 vdd vdd 0 vdd_voltage
 
-* Latch (DUT):
-x1 D DN Q QN CLK RESET vdd LATCH
+* DUT:
+.include "./dut.cir"
 
 * Latch inputs:
 vp1 reset 	0 pulse (1 0 reset_time 0 0 1 1)
