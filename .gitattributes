@@ -1,1 +1,2 @@
-text circuit1.cir readSpiceBin.m script1.cmd traces.bin traces2.bin eof=lf
+* text eol=lf
+

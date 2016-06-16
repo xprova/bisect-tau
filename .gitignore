@@ -38,3 +38,4 @@ $RECYCLE.BIN/
 *.bin
 
 bsim4v4.out
+output/
