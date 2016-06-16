@@ -1,0 +1,19 @@
+.include "./bisection-params.cir"
+
+.GLOBAL vdd
+
+* Supply voltage:
+vdd vdd 0 vdd_voltage
+
+* DUT:
+.include "./dut.cir"
+
+* Latch inputs:
+vp1 reset 	0 0
+vv2 clk 	1 0
+vp3 D  		0 0
+vdc DN 		0 0
+
+.include "./ic.cir"
+
+.END

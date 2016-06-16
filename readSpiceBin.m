@@ -2,7 +2,7 @@ function varargout = readSpiceBin(file1)
 
 if nargin == 0
     
-    file1 = 'traces2.bin';
+    file1 = 'output/spice-output.bin';
     
 end
 
@@ -11,6 +11,8 @@ fid = fopen(file1, 'r');
 variableSection = 0;
 
 varNames = {};
+
+varTypes = {};
 
 while 1
     
@@ -34,6 +36,8 @@ while 1
         
         varNames{end+1} = str(k(2)+1 : k(3)-1); %#ok<AGROW>
         
+        varTypes{end+1} = str(k(3)+1:end); %#ok<AGROW>
+        
     end
     
     if isequal(str, 'Variables:')
@@ -56,7 +60,9 @@ signals = fileData(2:end, :);
 
 sigNames = varNames(2:end);
 
-if nargout; varargout = {t, signals, sigNames}; end
+sigTypes = varTypes(2:end);
+
+if nargout; varargout = {t, signals, sigNames, sigTypes}; end
 
 end
 

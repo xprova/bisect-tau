@@ -1,12 +1,9 @@
 function plotSignals()
 
-[t, signals, sigNames] = readSpiceBin('spice-output/traces2.bin');
+[t, signals, sigNames] = readSpiceBin('./output/spice-output-restart.bin');
 
 signalGroups = {
-    {'clk', 'reset'}
-    {'d', 'dn'}
     {'q', 'qn'}
-    {'x1.a', 'x1.an'}
     };
 
 clc; sigNames'
