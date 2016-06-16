@@ -1,0 +1,92 @@
+* Synchronizer Components
+
+*----------------------------------------------------------------
+
+* Subcircuit Definitions:
+
+*----------------------------------------------------------------
+
+.SUBCKT INVERTER  vin vout vdd
+
+	* 65n/65n green
+
+	M1 vout vin vdd vdd P1 l=45n w=45n
+	M2 vout vin 0   0   N1 l=45n w=45n
+
+.ENDS INVERTER
+
+.SUBCKT INVERTER2  vin vout vdd gnd
+
+	* 225n/90n blue
+	* 360n/180n red
+	* 360n/90n magenta
+	* 45n/45n black
+
+	M1 vout vin vdd vdd P1 l=45n w=225n
+	M2 vout vin 0   0   N1 l=45n w=90n
+
+.ENDS INVERTER2
+
+.SUBCKT MS_FILTER A AN Q QN vdd
+
+	x1 AN Q A  0 INVERTER2
+	x2 A QN AN 0 INVERTER2
+
+.ENDS MS_FILTER
+
+*----------------------------------------------------------------
+
+* Latches:
+
+.SUBCKT LATCH D DN Q QN CLK RESET vdd
+
+	x1 A AN vdd INVERTER
+	x2 AN A vdd INVERTER
+
+	M1 AN D v1  0   N1 l=45n w=180n
+	M2 v1 CLK   0 0 N1 l=45n w=180n
+
+	M3 A DN v2  0   N1 l=45n w=180n
+	M4 v2 CLK   0 0 N1 l=45n w=180n
+
+	* -----------------------------
+
+	x3 A QN vdd 0 INVERTER2
+	x4 AN Q vdd 0 INVERTER2
+
+	M5 A RESET 0  0  N1 l=45n w=90n
+
+.ENDS LATCH
+
+.SUBCKT LATCH_FILTERED D DN Q QN CLK RESET vdd
+
+	x1 A AN vdd INVERTER
+	x2 AN A vdd INVERTER
+
+	M1 AN D v1  0   N1 l=45n w=180n
+	M2 v1 CLK   0 0 N1 l=45n w=180n
+
+	M3 A DN v2  0   N1 l=45n w=180n
+	M4 v2 CLK   0 0 N1 l=45n w=180n
+
+	* -----------------------------
+
+	x3 A AN Q QN vdd MS_FILTER
+
+	M5 A RESET 0  0  N1 l=45n w=90n
+
+.ENDS LATCH_FILTERED
+
+*----------------------------------------------------------------
+
+* Gates:
+
+.SUBCKT NAND va vb vout vdd
+
+	M1 vout vb vdd vdd   P1 l=45n w=180n
+	M2 vout va vdd vdd   P1 l=45n w=180n
+
+	M3 vout va  V1   0   N1 l=45n w=180n
+	M4   V1 vb   0   0   N1 l=45n w=180n
+
+.ENDS NAND
