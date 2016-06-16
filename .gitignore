@@ -37,3 +37,4 @@ $RECYCLE.BIN/
 # spice output files
 *.bin
 
+bsim4v4.out
