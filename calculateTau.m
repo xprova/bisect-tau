@@ -8,20 +8,20 @@ load('output/bisection-output.mat');
 
 h = bisectionResults;
 
-k = (h(:, 2) == useHigh) & ~isinf(h(:, 3));
+k = (h(:, 4) == useHigh) & ~isinf(h(:, 5));
 
 h = h(k, :);
 
-ts = h(:, 3); % settling time
+ts = h(:, 5); % settling time
 
 te = ts - min(ts); % delay extension
 
-windowSize = abs(h(:, 1) - h(end, 1)); % input event window size
+windowSize = abs(h(:, 3) - h(end, 1)); % input event window size
 
 if isempty(forceMeasureRange)
-    
+
     forceMeasureRange = range(te) * [0.05 0.95];
-    
+
 end
 
 % fitting

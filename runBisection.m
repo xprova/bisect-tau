@@ -1,5 +1,7 @@
 function runBisection()
 
+delete('output/spice-step-*.bin');
+
 % parameters
 
 plotRange = [4.8 6] * 1e-9;
@@ -14,13 +16,13 @@ if ~skipChecks
         
     % check that q(L) < qn(L):
     
-    [~, q, qn] = simSpice(L);
+    [~, q, qn] = simSpice(L, 'output/spice-check-low.bin');
     
     assert(q(end) < qn(end), 'q(L) must be < qn(L)');
     
     % check that q(H) > qn(H):
     
-    [~, q, qn] = simSpice(H);
+    [~, q, qn] = simSpice(H, 'output/spice-check-high.bin');
     
     assert(q(end) > qn(end), 'q(H) must be > qn(L)');
     
@@ -50,35 +52,35 @@ xlim(plotRange);
 
 for i=1:50
     
+    outputFile = sprintf('output/spice-step-%03d.bin', i);
+    
     m = (H+L) / 2;
     
-    [t, q, qn] = simSpice(m);
+    [t, q, qn] = simSpice(m, outputFile);
     
-    if q(end) > qn(end)
-        
-        H = m;
-        
-        R = 1;
-        
-    else
-        
-        L = m;
-        
-        R = 0;
-        
-    end
+    R = 1 * (q(end) > qn(end)); % settling state
     
     plot(t, [q; qn]);
     
     ts = getSettlingTime(t, q, qn);
     
-    bisectionResults(end+1, :) = [m R ts]; %#ok<AGROW>
+    bisectionResults(end+1, :) = [H L m R ts]; %#ok<AGROW>
     
     plot([1 1] * ts, [0 1], '-k');
     
     title(sprintf('m = %1.10f ns', m * 1e9));
     
     drawnow
+    
+    if q(end) > qn(end)
+        
+        H = m;
+        
+    else
+        
+        L = m;
+        
+    end
     
 end
 
@@ -106,7 +108,7 @@ end
 
 end
 
-function [t, q, qn] = simSpice(d_time)
+function [t, q, qn] = simSpice(d_time, outputFile)
 
 fid = fopen('bisection-params.cir', 'w');
 
@@ -122,7 +124,9 @@ if exitCode
     
 end
 
-[t, signals, sigNames] = readSpiceBin('output/spice-output.bin');
+copyfile('output/spice-output.bin', outputFile);
+
+[t, signals, sigNames] = readSpiceBin(outputFile);
 
 q_ind = getSignalIndex(sigNames, 'q');
 
