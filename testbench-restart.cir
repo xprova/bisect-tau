@@ -9,10 +9,10 @@ vdd vdd 0 vdd_voltage
 .include "./dut.cir"
 
 * Latch inputs:
-cp1 reset 	0 1
-cv2 clk 	0 1
-cp3 D  		0 1
-cdc DN 		0 1
+vp1 reset 	0 pulse (1 0 reset_time 0 0 1 1)
+vp2 clk 	0 pulse (0 1 clk_time 	0 0 1 1)
+vp3 D  		0 pulse (1 0 d_time		0 0 1 1)
+vdc DN 		0 0
 
 .include "./ic.cir"
 
