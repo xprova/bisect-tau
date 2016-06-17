@@ -1,23 +1,31 @@
 * voltage sources:
 
 V_set_clk            n_set_clk            0 +1.0000000000000000000000000
-V_set_qn             n_set_qn             0 +0.7105211573870033900000000
-V_set_q              n_set_q              0 +0.7107004536879331100000000
-V_set_x1.a           n_set_x1.a           0 +0.4445192526332148500000000
-V_set_x1.an          n_set_x1.an          0 +0.4444734543524713200000000
-V_set_x1.v1          n_set_x1.v1          0 +0.0000035827414963602687000
-V_set_x1.v2          n_set_x1.v2          0 +0.0000032811306089511620000
+V_set_d              n_set_d              0 +0.0000000000000000000000000
+V_set_dn             n_set_dn             0 +0.0000000000000000000000000
+V_set_qn             n_set_qn             0 +0.7106611238091137300000000
+V_set_q              n_set_q              0 +0.7107405814029964500000000
+V_set_reset          n_set_reset          0 +0.0000000000000000000000000
+V_set_x1.a           n_set_x1.a           0 +0.4444916140790737800000000
+V_set_x1.an          n_set_x1.an          0 +0.4444741773182525600000000
+V_set_x1.v1          n_set_x1.v1          0 +0.0000036347398134947325000
+V_set_x1.v2          n_set_x1.v2          0 +0.0000032803050121211707000
 
 * switches:
 
-S_set_clk            n_set_clk            clk                  V_SWITCH_ON 0
-S_set_qn             n_set_qn             qn                   V_SWITCH_ON 0
-S_set_q              n_set_q              q                    V_SWITCH_ON 0
-S_set_x1.a           n_set_x1.a           x1.a                 V_SWITCH_ON 0
-S_set_x1.an          n_set_x1.an          x1.an                V_SWITCH_ON 0
-S_set_x1.v1          n_set_x1.v1          x1.v1                V_SWITCH_ON 0
-S_set_x1.v2          n_set_x1.v2          x1.v2                V_SWITCH_ON 0
+.model switch1 sw vt=0.5e-3 vh=0 ron=1e-9 roff=1e9
+
+S_set_clk            n_set_clk            clk                  V_SWITCH_ON 0 switch1 OFF
+S_set_d              n_set_d              d                    V_SWITCH_ON 0 switch1 OFF
+S_set_dn             n_set_dn             dn                   V_SWITCH_ON 0 switch1 OFF
+S_set_qn             n_set_qn             qn                   V_SWITCH_ON 0 switch1 OFF
+S_set_q              n_set_q              q                    V_SWITCH_ON 0 switch1 OFF
+S_set_reset          n_set_reset          reset                V_SWITCH_ON 0 switch1 OFF
+S_set_x1.a           n_set_x1.a           x1.a                 V_SWITCH_ON 0 switch1 OFF
+S_set_x1.an          n_set_x1.an          x1.an                V_SWITCH_ON 0 switch1 OFF
+S_set_x1.v1          n_set_x1.v1          x1.v1                V_SWITCH_ON 0 switch1 OFF
+S_set_x1.v2          n_set_x1.v2          x1.v2                V_SWITCH_ON 0 switch1 OFF
 
 
-V_SET_MASTER V_SWITCH_ON 0 PULSE (0 1 5.2500000000e-09 0 0 1e-15 1e9)
+V_SET_MASTER v_switch_on 0 PULSE (1 0 5.2000000000e-09 0 0 1 1e9)
 

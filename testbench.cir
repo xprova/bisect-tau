@@ -1,4 +1,4 @@
-.include "./bisection-params.cir"
+* Testbench
 
 .GLOBAL vdd
 
@@ -17,7 +17,6 @@ vp2 clk 	0 pulse (0 1 clk_time 	0 0 1 1)
 vp3 D  		0 pulse (1 0 d_time		0 0 1 1)
 vdc DN 		0 0
 
-* .ic v(x1.a) = 0.5
-* .ic v(x1.an) = 0.5
+.include "./bisection-params.cir"
 
 .END

@@ -16,13 +16,21 @@ if ~skipChecks
         
     % check that q(L) < qn(L):
     
-    [~, q, qn] = simSpice(L, 'output/spice-check-low.bin');
+    prepareBisectionParams(L);
+    
+    sim = simSpice('testbench.cir', 'output/spice-check-low.bin');
+    
+    [q, qn] = sim.getSignals('q', 'qn');
     
     assert(q(end) < qn(end), 'q(L) must be < qn(L)');
     
     % check that q(H) > qn(H):
     
-    [~, q, qn] = simSpice(H, 'output/spice-check-high.bin');
+    prepareBisectionParams(H);
+    
+    sim = simSpice('testbench.cir', 'output/spice-check-high.bin');
+    
+    [q, qn] = sim.getSignals('q', 'qn');
     
     assert(q(end) > qn(end), 'q(H) must be > qn(L)');
     
@@ -52,11 +60,15 @@ xlim(plotRange);
 
 for i=1:50
     
-    outputFile = sprintf('output/spice-step-%03d.bin', i);
+    binFile = sprintf('output/spice-step-%03d.bin', i);
     
     m = (H+L) / 2;
     
-    [t, q, qn] = simSpice(m, outputFile);
+    prepareBisectionParams(m); % set new transition time
+    
+    sim = simSpice('testbench.cir', binFile);
+    
+    [t, q, qn] = sim.getSignals('time', 'q', 'qn');
     
     R = 1 * (q(end) > qn(end)); % settling state
     
@@ -108,38 +120,12 @@ end
 
 end
 
-function [t, q, qn] = simSpice(d_time, outputFile)
+function prepareBisectionParams(d_time)
 
 fid = fopen('bisection-params.cir', 'w');
 
 fprintf(fid, '.param d_time = %1.10fn', d_time / 1e-9);
 
 fclose(fid);
-
-exitCode = system('ngspice runTestbench.cmd');
-
-if exitCode
-    
-    error('Could not run ngspice. Make sure it is installed and added to PATH');
-    
-end
-
-copyfile('output/spice-output.bin', outputFile);
-
-[t, signals, sigNames] = readSpiceBin(outputFile);
-
-q_ind = getSignalIndex(sigNames, 'q');
-
-qn_ind = getSignalIndex(sigNames, 'qn');
-
-q = signals(q_ind, :);
-
-qn = signals(qn_ind, :);
-
-end
-
-function y = getSignalIndex(sigNames, signal)
-
-y = find(strcmp(sigNames, signal));
 
 end

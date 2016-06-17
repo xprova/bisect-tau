@@ -1,4 +1,4 @@
-function genInitialConditions(sigNames, sigICs)
+function genInitialConditions(sigNames, sigTypes, sigICs, tRestart)
 
 if ~nargin
     
@@ -19,17 +19,21 @@ lines2 = {};
 
 for i=1:nSigs
     
-    cond(1) = ~endsWith(sigNames{i}, '#body');
-    cond(2) = ~endsWith(sigNames{i}, '#sbody');
-    cond(3) = ~endsWith(sigNames{i}, '#dbody');
-    cond(4) = ~endsWith(sigNames{i}, '#gate');
-    cond(5) = isequal(sigTypes{i}, 'voltage');
-    cond(6) = ~isequal(sigNames{i}, 'reset');
-    cond(7) = ~isequal(sigNames{i}, 'vdd');
-    cond(8) = ~isequal(sigNames{i}, 'd');
-    cond(9) = ~isequal(sigNames{i}, 'dn');
+    conds = [
+        isequal(sigTypes{i}, 'voltage')
+        ~endsWith(sigNames{i}, '#body')
+        ~endsWith(sigNames{i}, '#sbody')
+        ~endsWith(sigNames{i}, '#dbody')
+        ~endsWith(sigNames{i}, '#gate')
+%         ~isequal(sigNames{i}, 'reset')
+%         ~isequal(sigNames{i}, 'clk')
+        ~isequal(sigNames{i}, 'vdd')
+%         ~isequal(sigNames{i}, 'd')
+%         ~isequal(sigNames{i}, 'dn')
+        ~isequal(sigNames{i}, 'time');
+        ];
     
-    if all(cond)
+    if all(conds)
         
         %fprintf(fid, '.ic v(%20s) = %+1.25f\n', sigNames{i}, sigICs(i));
         
@@ -41,10 +45,12 @@ for i=1:nSigs
         
         sSet = sprintf('S_set_%s', n);
         
-        lines1{end+1} = sprintf('%-20s %-20s 0 %+1.25f\n', ...
+        lines1{end+1} = sprintf(...
+            '%-20s %-20s 0 %+1.25f\n', ...
             vSet, nSet, sigICs(i)); %#ok<AGROW>
         
-        lines2{end+1} = sprintf('%-20s %-20s %-20s V_SWITCH_ON 0\n', ...
+        lines2{end+1} = sprintf(...
+            '%-20s %-20s %-20s V_SWITCH_ON 0 switch1 OFF\n', ...
             sSet, nSet, n); %#ok<AGROW>
         
     end
@@ -59,9 +65,13 @@ for i=1:length(lines1); fprintf(fid, '%s', lines1{i}); end
 
 fprintf(fid, '\n* switches:\n\n');
 
+fprintf(fid, '.model switch1 sw vt=0.5e-3 vh=0 ron=1e-9 roff=1e9\n\n');
+
 for i=1:length(lines2); fprintf(fid, '%s', lines2{i}); end
 
-fprintf(fid, '\n\nV_SET_MASTER V_SWITCH_ON 0 PULSE (0 1 %1.10e 0 0 1e-15 1e9)\n\n', tRestart);
+%fprintf(fid, '\n\nV_SET_MASTER v_switch_on 0 PULSE (0 1 %1.10e 0 0 1e-15 1e9)\n\n', tRestart);
+
+fprintf(fid, '\n\nV_SET_MASTER v_switch_on 0 PULSE (1 0 %1.10e 0 0 1 1e9)\n\n', tRestart);
 
 fclose(fid);
 

@@ -1,6 +1,9 @@
-.include "./bisection-params.cir"
+* Testbench Restart
 
 .GLOBAL vdd
+
+.param reset_time 	= 1n
+.param clk_time 	= 5n
 
 * Supply voltage:
 vdd vdd 0 vdd_voltage
@@ -9,10 +12,10 @@ vdd vdd 0 vdd_voltage
 .include "./dut.cir"
 
 * Latch inputs:
-vp1 reset 	0 pulse (1 0 reset_time 0 0 1 1)
-vp2 clk 	0 pulse (0 1 clk_time 	0 0 1 1)
-vp3 D  		0 pulse (1 0 d_time		0 0 1 1)
-vdc DN 		0 0
+cp1 reset 	0 1
+cp2 clk 	0 1
+cp3 D  		0 1
+cdc DN 		0 1
 
 .include "./ic.cir"
 

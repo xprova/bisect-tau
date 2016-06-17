@@ -1,18 +1,18 @@
-function varargout = readSpiceBin(file1)
+function simulation = readSpiceBin(binFile)
 
 if nargin == 0
     
-    file1 = 'output/spice-output.bin';
+    binFile = 'output/spice-output.bin';
     
 end
 
-fid = fopen(file1, 'r');
+fid = fopen(binFile, 'r');
 
 variableSection = 0;
 
-varNames = {};
+sigNames = {};
 
-varTypes = {};
+sigTypes = {};
 
 while 1
     
@@ -34,9 +34,9 @@ while 1
         
         k = find(str == 9); % tab char
         
-        varNames{end+1} = str(k(2)+1 : k(3)-1); %#ok<AGROW>
+        sigNames{end+1} = str(k(2)+1 : k(3)-1); %#ok<AGROW>
         
-        varTypes{end+1} = str(k(3)+1:end); %#ok<AGROW>
+        sigTypes{end+1} = str(k(3)+1:end); %#ok<AGROW>
         
     end
     
@@ -48,21 +48,60 @@ while 1
     
 end
 
-nvars = length(varNames);
+nSignals = length(sigNames);
 
-fileData = fread(fid, [nvars timePoints], 'double');
+fileData = fread(fid, [nSignals timePoints], 'double');
 
 fclose(fid);
 
-t = fileData(1, :);
+simulation = struct;
 
-signals = fileData(2:end, :);
+simulation.signals = fileData;
 
-sigNames = varNames(2:end);
+simulation.sigNames = sigNames;
 
-sigTypes = varTypes(2:end);
+simulation.sigTypes = sigTypes;
 
-if nargout; varargout = {t, signals, sigNames, sigTypes}; end
+simulation.getSignals = @getSignals;
+
+simulation.getType = @getType;
+
+    function varargout = getSignals(varargin)
+        
+        % example call:
+        % [t, q, qn] = getSignals('time', 'q', 'qn');
+        
+        n = length(varargin);
+        
+        varargout = cell(n, 1);
+        
+        for i=1:n
+        
+            ind = getIndex(sigNames, varargin{i});
+        
+            varargout{i} = fileData(ind, :);
+            
+        end
+        
+    end
+
+    function tp = getType(signal)
+        
+        ind = getIndex(sigNames, signal);
+        
+        tp = sigTypes{ind};
+        
+    end        
+
+end
+
+
+function y = getIndex(sigNames, signal)
+
+% returns index of signal in sigNames
+% or [] if not found
+
+y = find(strcmp(sigNames, signal));
 
 end
 
