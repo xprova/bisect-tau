@@ -16,7 +16,7 @@ plot(t1, signals1([s1 s2], :));
 
 tRestart = 5.25e-9;
 
-plot(tRestart + t2, signals2([s3 s4], :)+0.00);
+plot(tRestart + t2, signals2([s3 s4], :), 'r');
 
 end
 
