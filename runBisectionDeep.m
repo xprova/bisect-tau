@@ -2,7 +2,7 @@ function runBisectionDeep()
 
 delete('output/spice-deepstep-*.bin');
 
-BisectionDeepResults = [];
+bisectionResultsDeep = [];
 
 load('output/bisection-output.mat');
 
@@ -93,7 +93,7 @@ for i=1:50
     
     ts = getSettlingTime(t, q, qn);
     
-    BisectionDeepResults(end+1, :) = [H L m R ts]; %#ok<AGROW>
+    bisectionResultsDeep(end+1, :) = [H L m R ts]; %#ok<AGROW>
     
     plot([1 1] * ts, [0 1], '-k');
     
@@ -103,7 +103,7 @@ for i=1:50
     
 end
 
-save('output/bisection-deep-output.mat', 'BisectionDeepResults');
+save('output/bisection-deep-output.mat', 'bisectionResultsDeep');
 
 end
 
@@ -124,37 +124,5 @@ else
     ts = t(ind);
     
 end
-
-end
-
-function [t, q, qn] = simSpiceRestart(sigNames, sigTypes, state, tRestart, outputFile)
-
-genInitialConditions(sigNames, sigTypes, state, tRestart)
-
-exitCode = system('ngspice runTestbench-restart.cmd');
-
-if exitCode
-    
-    error('Could not run ngspice. Make sure it is installed and added to PATH');
-    
-end
-
-copyfile('output/spice-output.bin', outputFile);
-
-[t, signals, sigNames] = readSpiceBin(outputFile);
-
-q_ind = getSignalIndex(sigNames, 'q');
-
-qn_ind = getSignalIndex(sigNames, 'qn');
-
-q = signals(q_ind, :);
-
-qn = signals(qn_ind, :);
-
-end
-
-function y = getSignalIndex(sigNames, signal)
-
-y = find(strcmp(sigNames, signal));
 
 end

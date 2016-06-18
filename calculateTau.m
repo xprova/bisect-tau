@@ -4,9 +4,9 @@ useHigh = 1; % use high-resolving or low-resolving bisection steps
 
 forceMeasureRange = []; % range to measure tau over (empty for auto)
 
-load('output/bisection-deep-output.mat');
+load('output/bisection-output.mat');
 
-h = BisectionDeepResults;
+h = bisectionResults;
 
 k = (h(:, 4) == useHigh) & ~isinf(h(:, 5));
 

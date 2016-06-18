@@ -78,7 +78,7 @@ for i=1:50
     
     bisectionResults(end+1, :) = [H L m R ts]; %#ok<AGROW>
     
-    plot([1 1] * ts, [0 1], '-k');
+    plot(ts, 0, 'ok');
     
     title(sprintf('m = %1.10f ns', m * 1e9));
     

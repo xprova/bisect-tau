@@ -15,7 +15,6 @@ vdd vdd 0 vdd_voltage
 cp1 reset 	0 1
 cp2 clk 	0 1
 cp3 D  		0 1
-cdc DN 		0 1
 
 .include "./ic.cir"
 

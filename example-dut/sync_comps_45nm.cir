@@ -38,10 +38,12 @@
 
 * Latches:
 
-.SUBCKT LATCH D DN Q QN CLK RESET vdd
+.SUBCKT LATCH D Q QN CLK RESET vdd
 
 	x1 A AN vdd INVERTER
 	x2 AN A vdd INVERTER
+
+	vdc Dn 0 0
 
 	M1 AN D v1  0   N1 l=45n w=180n
 	M2 v1 CLK   0 0 N1 l=45n w=180n

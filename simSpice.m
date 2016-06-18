@@ -26,13 +26,15 @@ end
 
 function prepareCommandFile(cmdFile, testbenchFile, binFile)
 
+simLength = 10e-9;
+
 cmds = {
     
 '* Testbench'
 ''
 '.control'
 '	source {TESTBENCH}'
-'	tran 1ps 10ns'
+'	tran 1ps {LENGTH}'
 '	write {BIN}'
 '	quit'
 '.endc'
@@ -49,6 +51,7 @@ for i=1:n
     
     c = strrep(c, '{TESTBENCH}', testbenchFile);
     c = strrep(c, '{BIN}', binFile);
+    c = strrep(c, '{LENGTH}', sprintf('%1.10e', simLength));
     
     fprintf(fid, '%s\n', c);
     

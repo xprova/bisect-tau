@@ -4,6 +4,7 @@
 
 .param reset_time 	= 1n
 .param clk_time 	= 5n
+.param d_time 		= 4n
 
 * Supply voltage:
 vdd vdd 0 vdd_voltage
@@ -12,10 +13,8 @@ vdd vdd 0 vdd_voltage
 .include "./dut.cir"
 
 * Latch inputs:
-vp1 reset 	0 pulse (1 0 reset_time 0 0 1 1)
+vp1 reset 	0 pulse (0 1 reset_time 0 0 1e-9 1)
 vp2 clk 	0 pulse (0 1 clk_time 	0 0 1 1)
 vp3 D  		0 pulse (1 0 d_time		0 0 1 1)
-
-.include "./bisection-params.cir"
 
 .END
