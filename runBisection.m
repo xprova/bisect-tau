@@ -6,7 +6,7 @@ delete('output/spice-step-*.bin');
 
 plotRange = [4.8 6] * 1e-9;
 
-skipChecks = 1;
+skipChecks = 0;
 
 % lower and upper bounds of bisection window:
     
@@ -20,7 +20,7 @@ if ~skipChecks
     
     sim = simSpice('spice/testbench.cir', 'output/spice-check-low.bin');
     
-    [q, qn] = sim.getSignals('q', 'qn');
+    [q, qn] = getSignals(sim, 'q', 'qn');
     
     assert(q(end) < qn(end), 'q(L) must be < qn(L)');
     
@@ -30,7 +30,7 @@ if ~skipChecks
     
     sim = simSpice('spice/testbench.cir', 'output/spice-check-high.bin');
     
-    [q, qn] = sim.getSignals('q', 'qn');
+    [q, qn] = getSignals(sim, 'q', 'qn');
     
     assert(q(end) > qn(end), 'q(H) must be > qn(L)');
     
@@ -68,7 +68,7 @@ for i=1:50
     
     sim = simSpice('spice/testbench.cir', binFile);
     
-    [t, q, qn] = sim.getSignals('time', 'q', 'qn');
+    [t, q, qn] = getSignals(sim, 'time', 'q', 'qn');
     
     R = 1 * (q(end) > qn(end)); % settling state
     

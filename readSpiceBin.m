@@ -66,43 +66,6 @@ simulation.getSignals = @getSignals;
 
 simulation.getType = @getType;
 
-    function varargout = getSignals(varargin)
-        
-        % example call:
-        % [t, q, qn] = getSignals('time', 'q', 'qn');
-        
-        n = length(varargin);
-        
-        varargout = cell(n, 1);
-        
-        for i=1:n
-        
-            ind = getIndex(sigNames, varargin{i});
-        
-            varargout{i} = fileData(ind, :);
-            
-        end
-        
-    end
-
-    function tp = getType(signal)
-        
-        ind = getIndex(sigNames, signal);
-        
-        tp = sigTypes{ind};
-        
-    end        
-
-end
-
-
-function y = getIndex(sigNames, signal)
-
-% returns index of signal in sigNames
-% or [] if not found
-
-y = find(strcmp(sigNames, signal));
-
 end
 
 function y = startsWith(str1, str2)
