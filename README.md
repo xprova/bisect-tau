@@ -19,10 +19,10 @@ the following way:
 
 2. When `reset` is low and `clk` is high (or at a low-to-high transition of
 `clk` for edge-sensitive devics) the DUT must transition to the logic state
-indicated y `d`.
+indicated by `d`.
 
-The DUT must be prepared as a spice sub-circuit and have the required ports. A
-minimum definition would therfore be something like the below:
+The DUT must be prepared as a spice sub-circuit and have the required ports so
+minimum definition would be something like:
 
 ```
 .SUBCKT mydut D Q QN CLK RESET

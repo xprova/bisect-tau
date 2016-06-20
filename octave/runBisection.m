@@ -12,37 +12,11 @@ skipChecks = 0;
     
 L = 0; H = 10e-9;
 
-if ~skipChecks
-        
-    % check that q(L) < qn(L):
-    
-    prepareBisectionParams(L);
-    
-    sim = simSpice('spice/testbench.cir', 'output/spice-check-low.bin');
-    
-    [q, qn] = getSignals(sim, 'q', 'qn');
-    
-    assert(q(end) < qn(end), 'q(L) must be < qn(L)');
-    
-    % check that q(H) > qn(H):
-    
-    prepareBisectionParams(H);
-    
-    sim = simSpice('spice/testbench.cir', 'output/spice-check-high.bin');
-    
-    [q, qn] = getSignals(sim, 'q', 'qn');
-    
-    assert(q(end) > qn(end), 'q(H) must be > qn(L)');
-    
-end
+if ~skipChecks; runChecks(); end
 
 % prepare output directory
 
-if ~exist('output', 'dir')
-    
-    mkdir('output');
-    
-end
+if ~exist('output', 'dir'); mkdir('output'); end
 
 % prepare figure
 
@@ -117,15 +91,5 @@ else
     ts = t(ind);
     
 end
-
-end
-
-function prepareBisectionParams(d_time)
-
-fid = fopen('spice/bisection-params.cir', 'w');
-
-fprintf(fid, '.param d_time = %1.10fn', d_time / 1e-9);
-
-fclose(fid);
 
 end

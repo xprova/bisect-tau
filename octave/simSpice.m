@@ -1,4 +1,6 @@
-function sim = simSpice(testbenchCirFile, binFile)
+function sim = simSpice(testbenchCirFile, binFile, quiet)
+
+if nargin < 3; quiet = 0; end
 
 cmdFile = 'spice/runTestbench.cmd';
 
@@ -6,7 +8,21 @@ prepareCommandFile(cmdFile, testbenchCirFile, binFile);
 
 cmd = sprintf('ngspice %s', cmdFile);
 
-exitCode = system(cmd);
+if quiet
+
+    if isunix
+        
+        cmd = strcat(cmd, ' >> /dev/null 2>&1');
+    
+        [exitCode, ~] = system(cmd);
+        
+    end
+    
+else
+
+    exitCode = system(cmd);
+    
+end
 
 delete(cmdFile);
 
