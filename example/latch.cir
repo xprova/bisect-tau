@@ -24,8 +24,8 @@
 
 * Include your DUT with all of its dependencies here
 
-.include "./example-dut/modelcard.nmos"
-.include "./example-dut/modelcard.pmos"
-.include "./example-dut/sync_comps_45nm.cir"
+.include "./dependencies/modelcard.nmos"
+.include "./dependencies/modelcard.pmos"
+.include "./dependencies/circuits.cir"
 
 x1 D Q QN CLK RESET vdd LATCH

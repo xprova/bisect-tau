@@ -1,4 +1,4 @@
-function runBisection()
+function runBisection(dutFile)
 
 delete('output/spice-step-*.bin');
 
@@ -11,6 +11,8 @@ skipChecks = 0;
 % lower and upper bounds of bisection window:
     
 L = 0; H = 10e-9;
+
+prepareIncludeDUT(dutFile);
 
 if ~skipChecks; runChecks(); end
 

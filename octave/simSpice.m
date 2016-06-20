@@ -28,11 +28,7 @@ delete(cmdFile);
 
 if exitCode
     
-    disp('Error encountered while running ngspice');
-    
-    disp('Make sure ngspice is installed and added to PATH');
-    
-    error('fatal error');
+    sim = [];
     
 end
 

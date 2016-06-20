@@ -18,6 +18,12 @@ te = ts - min(ts); % delay extension
 
 windowSize = abs(h(:, 3) - h(end, 1)); % input event window size
 
+% removing zero-sized windows
+
+k = windowSize > 0; te = te(k); windowSize = windowSize(k);
+
+% calculate automatic calculate range if neededs
+
 if isempty(forceMeasureRange)
 
     forceMeasureRange = range(te) * [0.05 0.95];
@@ -34,13 +40,15 @@ f = polyfit(te(k), windowSizeLog(k), 1);
 
 tau = -1/f(1);
 
-Tw = f(2);
+Tw = exp(f(2));
 
-winFun = @(clktoq) exp(Tw) * exp(-clktoq/tau);
+winFun = @(clktoq) Tw * exp(-clktoq/tau);
 
 % plotting
 
 t = linspace(forceMeasureRange(1), forceMeasureRange(2), 100);
+
+fh = figure();
 
 clf; hold on;
 
@@ -58,8 +66,31 @@ legend([h1 h2], {'Simulation Results', 'Exponential Fit'});
 
 grid on; box on;
 
-strTitle = sprintf('Tau = %1.3f ps', tau * 1e12);
+strTau = sprintf('Tau = %1.3e sec', tau);
 
-title(strTitle);
+strTw = sprintf('Tw  = %1.3e sec', Tw);
+
+results = {
+    'Results:'
+    ''
+    strTau
+    strTw
+    ''
+    'Close figure window to exit.'
+    };
+
+for i=1:length(results);
+
+    disp(results{i});
+
+end
+
+title(strTau);
+
+while ishandle(fh);
+
+    drawnow
+
+end
 
 end

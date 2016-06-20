@@ -10,7 +10,7 @@
 vdd vdd 0 vdd_voltage
 
 * DUT:
-.include "./dut.cir"
+.include "./dut_include.cir"
 
 * Latch inputs:
 vp1 reset 	0 pulse (0 1 reset_time 0 0 1e-9 1)

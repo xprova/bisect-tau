@@ -8,19 +8,12 @@
 
 .SUBCKT INVERTER  vin vout vdd
 
-	* 65n/65n green
-
 	M1 vout vin vdd vdd P1 l=45n w=45n
 	M2 vout vin 0   0   N1 l=45n w=45n
 
 .ENDS INVERTER
 
 .SUBCKT INVERTER2  vin vout vdd gnd
-
-	* 225n/90n blue
-	* 360n/180n red
-	* 360n/90n magenta
-	* 45n/45n black
 
 	M1 vout vin vdd vdd P1 l=45n w=225n
 	M2 vout vin 0   0   N1 l=45n w=90n
