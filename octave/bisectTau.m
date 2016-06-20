@@ -2,6 +2,13 @@
 %
 % it is passed the working dir (output of pwd) and a list of the command
 % line options supplied by the user
+%
+% note about working directories:
+%
+% - octave will use the tool's home directory as its working directory
+% - this will also be ngspice's working directory (inherited from octave)
+% - relative paths in testbench circuits and includes are specified
+%   according to the above
 
 function bisectTau(varargin)
 
