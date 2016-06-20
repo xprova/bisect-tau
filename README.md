@@ -9,26 +9,20 @@ and `qn`.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/diagram.svg)
 
-The outputs `q` and `qn` indicate the logical state of the DUT. The DUT is
-said to be in a logic high state when `q` is larger than `qn` and in a logic
-low state otherwise.
+The outputs `q` and `qn` indicate the logical state of the DUT (logic high
+when `q` is larger than `qn` and logic low otherwise).
 
-The DUT can be either a level or an edge-sensitive device. Level sensitive
-devices copy the logic state of their inputs while `clk` is high and retain
-their state when `clk` goes low while edge-sensitive devices copy and retain
-the state of their inputs at the time epoch when `clk` transitions from low to
-high.
+The DUT can be either a level or an edge-sensitive device and must behave in
+the following way:
 
-The DUT must behave in the following way:
+1. When `reset` is pulled high, the DUT must transition to logic low.
 
-1. When `reset` is pulled high, the DUT must transition to a logic low state.
+2. When `reset` is low and `clk` is high (or at a low-to-high transition of
+`clk` for edge-sensitive devics) the DUT must transition to the logic state
+indicated y `d`.
 
-2. When `reset` is low, the device must copy the state of its `d` port when
-`clk` is high (only for level-sensitive devices) and when `clk` transitions
-from low to high (only for edge-sensitive devices).
-
-The DUT must be prepared as a spice sub-circuit with required ports. A minimum
-definition would be something like the below
+The DUT must be prepared as a spice sub-circuit and have the required ports. A
+minimum definition would therfore be something like the below:
 
 ```
 .SUBCKT mydut D Q QN CLK RESET
@@ -38,9 +32,9 @@ definition would be something like the below
 .ENDS mydut
 ```
 
-The sub-circuit definition (and any denpendencies) must be defined in the
-spice circuit file `dut.cir` at the root directory. The file must also
-define the supply voltage and instantiate the design. For example:
+The sub-circuit definition (and any denpendencies) must be listed in the spice
+circuit file `dut.cir` at the root directory. The file must also define the
+supply voltage and instantiate the design. For example:
 
 ```
 .param vdd_voltage 	= 1
