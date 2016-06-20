@@ -14,9 +14,9 @@ if quiet
         
         cmd = strcat(cmd, ' >> /dev/null 2>&1');
     
-        [exitCode, ~] = system(cmd);
-        
     end
+
+    [exitCode, ~] = system(cmd);
     
 else
 
