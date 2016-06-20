@@ -32,7 +32,16 @@ hold on;
 
 xlim(plotRange);
 
-for i=1:50
+rounds = 50;
+
+ts = inf;
+
+disp('starting bisection ...');
+
+for i=1:rounds
+
+    fprintf('round (%2d/%2d), window size = %1.2e sec, settling time = %1.2e sec\n', ...
+        i, rounds, H-L, ts);
     
     binFile = sprintf('output/spice-step-%03d.bin', i);
     
@@ -40,7 +49,7 @@ for i=1:50
     
     prepareBisectionParams(m); % set new transition time
     
-    sim = simSpice('spice/testbench.cir', binFile);
+    sim = simSpice('spice/testbench.cir', binFile, 1);
     
     [t, q, qn] = getSignals(sim, 'time', 'q', 'qn');
     
