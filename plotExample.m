@@ -4,7 +4,7 @@ L = 0;
 
 prepareBisectionParams(L);
 
-sim = simSpice('testbench-example2.cir', 'output/spice-example-2.bin');
+sim = simSpice('spice/testbench-example2.cir', 'output/spice-example-2.bin');
 
 [t, reset, q, qn, clk, d] = sim.getSignals('time', 'reset', 'q', 'qn', 'clk', 'd');
 
@@ -57,7 +57,7 @@ end
 
 function prepareBisectionParams(d_time)
 
-fid = fopen('bisection-params.cir', 'w');
+fid = fopen('spice/bisection-params.cir', 'w');
 
 fprintf(fid, '.param d_time = %1.10fn', d_time / 1e-9);
 

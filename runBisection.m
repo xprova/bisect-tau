@@ -18,7 +18,7 @@ if ~skipChecks
     
     prepareBisectionParams(L);
     
-    sim = simSpice('testbench.cir', 'output/spice-check-low.bin');
+    sim = simSpice('spice/testbench.cir', 'output/spice-check-low.bin');
     
     [q, qn] = sim.getSignals('q', 'qn');
     
@@ -28,7 +28,7 @@ if ~skipChecks
     
     prepareBisectionParams(H);
     
-    sim = simSpice('testbench.cir', 'output/spice-check-high.bin');
+    sim = simSpice('spice/testbench.cir', 'output/spice-check-high.bin');
     
     [q, qn] = sim.getSignals('q', 'qn');
     
@@ -66,7 +66,7 @@ for i=1:50
     
     prepareBisectionParams(m); % set new transition time
     
-    sim = simSpice('testbench.cir', binFile);
+    sim = simSpice('spice/testbench.cir', binFile);
     
     [t, q, qn] = sim.getSignals('time', 'q', 'qn');
     
@@ -122,7 +122,7 @@ end
 
 function prepareBisectionParams(d_time)
 
-fid = fopen('bisection-params.cir', 'w');
+fid = fopen('spice/bisection-params.cir', 'w');
 
 fprintf(fid, '.param d_time = %1.10fn', d_time / 1e-9);
 

@@ -1,6 +1,6 @@
 function sim = simSpice(testbenchCirFile, binFile)
 
-cmdFile = 'runTestbench.cmd';
+cmdFile = 'spice/runTestbench.cmd';
 
 prepareCommandFile(cmdFile, testbenchCirFile, binFile);
 
