@@ -2,9 +2,9 @@ function plotExample()
 
 L = 0;
 
-prepareBisectionParams(L);
+testbench = prepareBisectionTestbench('./example/latch.cir', L, './spice/testbench-example2.cir');
 
-sim = simSpice('spice/testbench-example2.cir', getOutputFile('spice-example-2.bin'));
+sim = simSpice(testbench, getOutputFile('spice-example-2.bin'));
 
 [t, reset, q, qn, clk, d] = sim.getSignals('time', 'reset', 'q', 'qn', 'clk', 'd');
 

@@ -52,9 +52,7 @@ if nargin > 1
 
             dutFile = fullfile(workDir, varargin{3});
 
-            prepareIncludeDUT(dutFile);
-
-            runChecks();
+            runChecks(dutFile);
 
             return;
 

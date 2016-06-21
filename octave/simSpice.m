@@ -1,8 +1,28 @@
-function sim = simSpice(testbenchCirFile, binFile, quiet)
+function sim = simSpice(testbenchCode, binFile, quiet)
 
 if nargin < 3; quiet = 0; end
 
-cmdFile = 'spice/runTestbench.cmd';
+cmdFile = getOutputFile('runTestbench.cmd');
+
+testbenchCirFile = getOutputFile('testbench.cir');
+
+fid = fopen(testbenchCirFile, 'w');
+
+if fid == -1
+
+    error('cannot output to file %s', testbenchCirFile)
+
+else
+
+    for i=1:length(testbenchCode)
+
+        fprintf(fid, '%s\n', testbenchCode{i});
+
+    end
+
+end
+
+fclose(fid);
 
 prepareCommandFile(cmdFile, testbenchCirFile, binFile);
 
@@ -11,28 +31,32 @@ cmd = sprintf('ngspice %s', cmdFile);
 if quiet
 
     if isunix
-        
+
         cmd = strcat(cmd, ' >> /dev/null 2>&1');
-    
+
     end
 
     [exitCode, ~] = system(cmd);
-    
+
 else
 
     exitCode = system(cmd);
-    
+
 end
 
 delete(cmdFile);
 
 if exitCode
-    
-    sim = [];
-    
-end
 
-sim = readSpiceBin(binFile);
+    warning('ngspice terminated with non-zero exit code');
+
+    sim = [];
+
+else
+
+    sim = readSpiceBin(binFile);
+
+end
 
 end
 
@@ -41,7 +65,7 @@ function prepareCommandFile(cmdFile, testbenchFile, binFile)
 simLength = 10e-9;
 
 cmds = {
-    
+
 '* Testbench'
 ''
 '.control'
@@ -58,15 +82,15 @@ n = length(cmds);
 fid = fopen(cmdFile, 'w');
 
 for i=1:n
-    
+
     c = cmds{i};
-    
+
     c = strrep(c, '{TESTBENCH}', testbenchFile);
     c = strrep(c, '{BIN}', binFile);
     c = strrep(c, '{LENGTH}', sprintf('%1.10e', simLength));
-    
+
     fprintf(fid, '%s\n', c);
-    
+
 end
 
 fclose(fid);

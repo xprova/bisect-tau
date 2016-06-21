@@ -16,9 +16,9 @@ skipChecks = 0;
 
 L = 0; H = 10e-9;
 
-prepareIncludeDUT(dutFile);
+% prepareIncludeDUT(dutFile);
 
-if ~skipChecks; runChecks(); end
+if ~skipChecks; runChecks(dutFile); end
 
 % prepare figure
 
@@ -49,9 +49,9 @@ for i=1:rounds
 
     m = (H+L) / 2;
 
-    prepareBisectionParams(m); % set new transition time
+    testbench = prepareBisectionTestbench(dutFile, m);
 
-    sim = simSpice('spice/testbench.cir', binFile, 1);
+    sim = simSpice(testbench, binFile, 1);
 
     [t, q, qn] = getSignals(sim, 'time', 'q', 'qn');
 

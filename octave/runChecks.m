@@ -1,9 +1,9 @@
-function runChecks()
+function runChecks(dutFile)
 
 checks = {
     {'checking if ngspice is installed ...', @checkSpice}
-    {'checking DUT behavior (test Case 1) ...', @checkCase1DUT}
-    {'checking DUT behavior (test Case 2) ...', @checkCase2DUT}
+    {'checking DUT behavior (test Case 1) ...', @() checkCase1DUT(dutFile)}
+    {'checking DUT behavior (test Case 2) ...', @() checkCase2DUT(dutFile)}
     };
 
 n = length(checks);
@@ -62,15 +62,15 @@ end
 
 end
 
-function [result, errMsg] = checkCase1DUT()
+function [result, errMsg] = checkCase1DUT(dutFile)
 
 L = 0;
 
 % check that q(L) < qn(L):
 
-prepareBisectionParams(L);
+testbench = prepareBisectionTestbench(dutFile, L);
 
-sim = simSpice('spice/testbench.cir', getOutputFile('spice-check-low.bin'), 1);
+sim = simSpice(testbench, getOutputFile('spice-check-low.bin'), 1);
 
 if ~isempty(sim)
 
@@ -94,15 +94,15 @@ errMsg = 'The specified DUT failed test Case 1, for details refer to https://git
 
 end
 
-function [result, errMsg] = checkCase2DUT()
+function [result, errMsg] = checkCase2DUT(dutFile)
 
 H = 10e-9;
 
 % check that q(H) > qn(H):
 
-prepareBisectionParams(H);
+testbench = prepareBisectionTestbench(dutFile, H);
 
-sim = simSpice('spice/testbench.cir', getOutputFile('spice-check-high.bin'), 1);
+sim = simSpice(testbench, getOutputFile('spice-check-high.bin'), 1);
 
 if ~isempty(sim)
 
