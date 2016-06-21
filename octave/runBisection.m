@@ -20,10 +20,6 @@ prepareIncludeDUT(dutFile);
 
 if ~skipChecks; runChecks(); end
 
-% prepare output directory
-
-if ~exist('output', 'dir'); mkdir('output'); end
-
 % prepare figure
 
 clf; drawnow
