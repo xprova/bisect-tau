@@ -4,7 +4,7 @@ L = 0;
 
 prepareBisectionParams(L);
 
-sim = simSpice('spice/testbench-example2.cir', 'output/spice-example-2.bin');
+sim = simSpice('spice/testbench-example2.cir', getOutputFile('spice-example-2.bin'));
 
 [t, reset, q, qn, clk, d] = sim.getSignals('time', 'reset', 'q', 'qn', 'clk', 'd');
 

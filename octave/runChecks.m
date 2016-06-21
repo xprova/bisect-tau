@@ -70,13 +70,13 @@ L = 0;
 
 prepareBisectionParams(L);
 
-sim = simSpice('spice/testbench.cir', 'output/spice-check-low.bin', 1);
+sim = simSpice('spice/testbench.cir', getOutputFile('spice-check-low.bin'), 1);
 
 if ~isempty(sim)
 
     [q, qn] = getSignals(sim, 'q', 'qn');
 
-    if length(q) > 0
+    if ~isempty(q)
 
         if q(end) < qn(end)
 
@@ -102,13 +102,13 @@ H = 10e-9;
 
 prepareBisectionParams(H);
 
-sim = simSpice('spice/testbench.cir', 'output/spice-check-high.bin', 1);
+sim = simSpice('spice/testbench.cir', getOutputFile('spice-check-high.bin'), 1);
 
 if ~isempty(sim)
 
     [q, qn] = getSignals(sim, 'q', 'qn');
 
-    if length(q) > 0
+    if ~isempty(q)
 
       if q(end) > qn(end)
 

@@ -4,7 +4,7 @@ if ~nargin
     
     tRestart = 5.25e-9;
     
-    [t, signals, sigNames, sigTypes] = readSpiceBin('./output/spice-output.bin');
+    [t, signals, sigNames, sigTypes] = readSpiceBin(getOutputFile('spice-output.bin'));
     
     k = find(t > tRestart, 1, 'first');
     

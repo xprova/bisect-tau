@@ -2,7 +2,7 @@ function simulation = readSpiceBin(binFile)
 
 if nargin == 0
 
-    binFile = 'output/spice-output.bin';
+    binFile = getOutputFile('spice-output.bin');
 
 end
 

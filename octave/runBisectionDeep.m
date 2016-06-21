@@ -1,10 +1,10 @@
 function runBisectionDeep()
 
-delete('output/spice-deepstep-*.bin');
+delete(getOutputFile('spice-deepstep-*.bin'));
 
 bisectionResultsDeep = [];
 
-load('output/bisection-output.mat');
+load(getOutputFile('bisection-output.mat'));
 
 initStepLow = 31;
 
@@ -24,8 +24,8 @@ end
 
 % loading low and high states
 
-binL = sprintf('output/spice-step-%03d.bin', initStepLow);
-binH = sprintf('output/spice-step-%03d.bin', initStepHigh);
+binL = getOutputFile(sprintf('spice-step-%03d.bin', initStepLow));
+binH = getOutputFile(sprintf('spice-step-%03d.bin', initStepHigh));
 
 simL = readSpiceBin(binL);
 simH = readSpiceBin(binH);
@@ -67,7 +67,7 @@ plot(simL.getSignals('time'), simL.getSignals('qn'), 'k');
 
 for i=1:50
     
-    binFile = sprintf('output/spice-deepstep-%03d.bin', i);
+    binFile = getOutputFile(sprintf('spice-deepstep-%03d.bin', i));
     
     m = (L + H) / 2;
     
@@ -103,7 +103,7 @@ for i=1:50
     
 end
 
-save('output/bisection-deep-output.mat', 'bisectionResultsDeep');
+save(getOutputFile('bisection-deep-output.mat'), 'bisectionResultsDeep');
 
 end
 
