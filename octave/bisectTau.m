@@ -22,48 +22,52 @@ cd(toolPath);
 
 workDir = varargin{1};
 
-iseq = @(a) isequal(varargin{2}, a);
+if nargin > 1
 
-if iseq('--help') || iseq('-h')
-    
-    printUsage(); return;
-    
-elseif iseq('--version') || iseq('-v')
-    
-    printVersion(); return;
-    
-elseif iseq('bisect')
+    iseq = @(a) isequal(varargin{2}, a);
 
-    if nargin>2
-    
-        dutFile = fullfile(workDir, varargin{3});
-        
-        runBisection(dutFile);
-        
+    if iseq('--help') || iseq('-h')
+
+        printUsage(); return;
+
+    elseif iseq('--version') || iseq('-v')
+
+        printVersion(); return;
+
+    elseif iseq('bisect')
+
+        if nargin>2
+
+            dutFile = fullfile(workDir, varargin{3});
+
+            runBisection(dutFile);
+
+            return;
+
+        end
+
+    elseif iseq('check')
+
+        if nargin>2
+
+            dutFile = fullfile(workDir, varargin{3});
+
+            prepareIncludeDUT(dutFile);
+
+            runChecks();
+
+            return;
+
+        end
+
+    elseif iseq('calculate')
+
+        calculateTau();
+
         return;
-        
+
     end
-    
-elseif iseq('check')
-    
-    if nargin>2
-        
-        dutFile = fullfile(workDir, varargin{3});
-        
-        prepareIncludeDUT(dutFile);
-        
-        runChecks();
-        
-        return;
-        
-    end
-    
-elseif iseq('calculate')
-    
-    calculateTau();    
-    
-    return;
-   
+
 end
 
 fprintf('Error parsing command line arguments. Run bisect-tau --help for help\n');
@@ -84,13 +88,13 @@ usage = {
     ''
     'Options:'
     '  -h --help     Show this screen.'
-    '  --version     Show version.'    
+    '  --version     Show version.'
     };
 
 for i=1:length(usage);
 
     fprintf('%s\n', usage{i});
-    
+
 end
 
 end

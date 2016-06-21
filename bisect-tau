@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# check if Octave is installed:
+
+type octave >> /dev/null 2>&1
+
+if [ ! "$?" = "0" ];
+	then
+	echo "This program requires GNU Octave. Please install Octave and make sure it is setup in PATH."
+	exit
+fi
+
+# find tool directory
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# launch octave and execute bisectTau()
 
 octave -q -p $DIR/octave --no-gui --eval "bisectTau `pwd` $*"
