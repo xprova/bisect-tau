@@ -2,6 +2,7 @@ function runChecks(dutFile)
 
 checks = {
     {'checking if ngspice is installed ...', @checkSpice}
+    {'checking if dut file exists ...', @() checkExist(dutFile)}
     {'checking DUT behavior (test Case 1) ...', @() checkCase1DUT(dutFile)}
     {'checking DUT behavior (test Case 2) ...', @() checkCase2DUT(dutFile)}
     };
@@ -123,5 +124,19 @@ end
 result = 1;
 
 errMsg = 'The specified DUT failed test Case 2, for details refer to https://github.com/xprova/bisect-tau';
+
+end
+
+function [result, errMsg] = checkExist(dutFile)
+
+if exist(dutFile, 'file')
+
+    result = 0; errMsg = [];
+
+else
+
+    result = 1; errMsg = sprintf('File not found: %s', dutFile);
+
+end
 
 end
