@@ -31,6 +31,31 @@
 
 * Latches:
 
+.SUBCKT LATCH_SLOW D Q QN CLK RESET vdd
+
+	x1 A AN vdd INVERTER
+	x2 AN A vdd INVERTER
+
+	vdc Dn 0 0
+
+	M1 AN D v1  0   N1 l=45n w=180n
+	M2 v1 CLK   0 0 N1 l=45n w=180n
+
+	M3 A DN v2  0   N1 l=45n w=180n
+	M4 v2 CLK   0 0 N1 l=45n w=180n
+
+	* -----------------------------
+
+	c1 a 0 1e-15
+	c2 an 0 1e-15
+
+	x3 A QN vdd 0 INVERTER2
+	x4 AN Q vdd 0 INVERTER2
+
+	M5 A RESET 0  0  N1 l=45n w=90n
+
+.ENDS LATCH
+
 .SUBCKT LATCH D Q QN CLK RESET vdd
 
 	x1 A AN vdd INVERTER

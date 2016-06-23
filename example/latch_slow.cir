@@ -1,0 +1,31 @@
+* Sample Design under Test (DUT) File
+*
+* This file must define a component with the following connections:
+*
+* D  	: data input
+* Q   	: output 1 (logic high)
+* QN 	: output 2 (logic low)
+* RESET : reset signal
+*
+* The component must be capable of transitioning to a logic HIGH or LOW state
+* depending on the voltages of RESET and D.
+*
+* In a logic HIGH state, the voltage of Q is higher than that of Qn while in
+* a LOW state Qn is higher
+*
+* - When RESET is held high for 1ns, the DUT must transition to logic LOW
+*
+* - When RESET is low and D goes high at t=0ns, the DUT must transition to HIGH
+* - When RESET is low and D goes high at t=10ns, the DUT must transition to LOW
+
+* This line defines the HIGH voltage of reset and D, change if necessary:
+
+.param vdd_voltage 	= 1
+
+* Include your DUT with all of its dependencies here
+
+.include "./dependencies/modelcard.nmos"
+.include "./dependencies/modelcard.pmos"
+.include "./dependencies/circuits.cir"
+
+x1 D Q QN CLK RESET vdd LATCH_SLOW
