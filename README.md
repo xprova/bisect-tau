@@ -125,10 +125,10 @@ round (25/50), window size = 5.96e-16 sec, settling time = 5.25e-09 sec
 
 If bisection is progressing correcting then window size will shrink by a
 factor of 2 per round and settling time will increase in small increments
-(although at the beginning or very end of the process).
+(although not at the beginning or very end of the process).
 
-A waveform window will also appear and show plots of the `q` and `qn` signals
-as the design is pushed into deeper metastable states.
+A waveform window will also appear and show plots of signals `q` and `qn` as
+the design is pushed into deeper metastable states.
 
 ### 4. Calculating Tau
 
@@ -138,8 +138,8 @@ Once bisection is complete, execute:
 ./bisect-tau calculate
 ```
 
-This will pull out the simulation traces from the bisection procedure ran last
-and print the calculated values of Tau and Tw:
+This will pull out simulation traces from the bisection procedure ran last and
+print the calculated values of Tau and Tw:
 
 ```
 Results:
@@ -152,5 +152,5 @@ Close figure window to exit.
 
 For a quick sanity check, the tool will also produce a semi-log plot of window
 size vs. settling time. If bisection was successful, there will be a clear
-straight line segment (this portion of the plot is used to fit an exponential
-relationship from which Tau and Tw are calculated).
+straight line segment showing the exponential relationship from which Tau and
+Tw were calculated.
