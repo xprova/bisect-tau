@@ -1,5 +1,28 @@
 ## bisect-tau
-Octave/Spice tool for characterizing the metastability resolution time constant tau
+
+This is a command line tool based on Octave (a GNU Matlab clone) and ngspice
+(an open-source free version of spice) to calculate the metastability
+resolution time constant Tau of a spice latch circuit (or any bistable circuit
+that behaves like a latch, e.g. an arbiter).
+
+For background information on metastability, MTBF calculations and a good
+review of issues concerning synchronizer reliability refer to the paper:
+
+Jones, Ian W., Suwen Yang, and Mark Greenstreet. "Synchronizer behavior and
+analysis." Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE
+Symposium on. IEEE, 2009.
+
+The tool uses bisection search to bring the transition time of the design's
+data input closer and closer to the tipping time point separating the final
+states of logic high and low. With each step, the design is brought into
+deeper metastable states and its output delay is increased. After 50 rounds of
+bisection, the tool fits an exponential function to the relationship between
+window size (the time difference between input transitions and the tipping
+point) and output delay then uses the fit to calculate Tau (as well as the
+parameter Tw that is also necessary for MTBF calculations).
+
+The sections below describe the steps to calculate Tau for a given bistable
+spice circuit.
 
 ### 1. Preparing the DUT
 
