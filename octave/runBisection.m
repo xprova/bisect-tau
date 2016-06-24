@@ -22,7 +22,15 @@ if ~skipChecks; runChecks(dutFile); end
 
 % prepare figure
 
+fh = figure();
+
 clf; drawnow
+
+title('Simulation Waveforms');
+
+xlabel('Time (sec)');
+
+ylabel('Voltage')
 
 % start bisection
 
@@ -38,12 +46,35 @@ rounds = 50;
 
 ts = inf;
 
+colorQ = [0 114 189]/255;
+
+colorQn = [119 172 48] / 255;
+
+t = 0:1;
+
+h1 = plot(t, t * nan, 'color', colorQ);
+
+h2 = plot(t, t * nan, 'color', colorQn);
+
+legend([h1 h2], {'q', 'qn'});
+
 disp('starting bisection ...');
 
 for i=1:rounds
 
-    fprintf('round (%2d/%2d), window size = %1.2e sec, settling time = %1.2e sec\n', ...
+    if ~ishandle(fh)
+
+        fprintf('Figure window closed, aborting ...\n'); return;
+
+    end
+
+    strProgress = sprintf( ...
+        'round (%2d/%2d), window size = %1.2e sec, settling time = %1.2e sec', ...
         i, rounds, H-L, ts);
+
+    fprintf('%s\n', strProgress);
+
+    set(fh, 'Name', strProgress);
 
     binFile = getOutputFile(sprintf('spice-step-%03d.bin', i));
 
@@ -57,7 +88,9 @@ for i=1:rounds
 
     R = 1 * (q(end) > qn(end)); % settling state
 
-    plot(t, [q; qn]);
+    plot(t, q, 'color', colorQ);
+
+    plot(t, qn, 'color', colorQn)
 
     ts = getSettlingTime(t, q, qn);
 
@@ -65,7 +98,7 @@ for i=1:rounds
 
     plot(ts, 0, 'ok');
 
-    title(sprintf('m = %1.10f ns', m * 1e9));
+    %title(sprintf('m = %1.10f ns', m * 1e9));
 
     drawnow
 
