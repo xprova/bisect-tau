@@ -55,69 +55,87 @@ a minimum definition would be something like:
 .ENDS mydut
 ```
 
-Latch spice circuits are usually part of the backend of cell libraries and can
-probably be passed to the tool with little or no modification. The circuit
-must be included in a wrapper spice file that (1) defines any dependencies
-such as transistor models etc., (2) instantiates the design naming naming its
-ports (`reset`, `clk`, `d`, `q` and `qn`) and (3) defines the supply voltage.
-The file would therefore look something like the below:
+Spice circuits are usually part of the backend of cell libraries and can
+usually be used with the tool with little or no modification.
+
+After locating the spice sub-circuit definition for the bistable device
+to be characterized, an instance of the latch must be declared in a wrapper
+spice file. The wrapper must:
+
+1. Define any DUT dependencies (e.g. transistor models)
+2. Define the supply voltage
+3. Instantiate the design naming its ports `reset`, `clk`, `d`, `q` and `qn`
+
+For example:
 
 ```
-.param vdd_voltage 	= 1
+* include transistor models:
 
 .include "./mydut/modelcard.nmos"
 .include "./mydut/modelcard.pmos"
+
+* include definition of cell latchx1:
+
 .include "./mydut/other_depencies.cir"
 
-x1 D Q QN CLK RESET mydut
+* specify supply voltage in volts:
+
+.param vdd_voltage 	= 1
+
+* instantiate latchx1 with the required port names:
+
+x1 D Q QN CLK RESET latchx1
 ```
 
-For details on defining sub-circuits refer to [ngspice users manual section 2.4
+For details on defining sub-circuits refer to [Ngspice Users Manual - Section 2.4
 (".SUBCKT Subcircuits")](http://ngspice.sourceforge.net/docs/ngspice-manual.pdf).
 
-(details on examples directory)
+The directory `examples` contains sample latch files that can be inspected or
+used to test run the rool.
 
 ### 2. Running Checks
 
-Once the DUT spice file is prepared, the design behavior can be checked by
-running
+Once the spice file is prepared, the design behavior can be checked by
+running:
 
 ```
 ./bisect-tau check mydut.cir
 ```
 
-This will simulate the design using two testbenches to verify that its reset
-and latching behaviors are correct.
+where `mydut.cir` is the wrapper spice file. This will simulate the design
+using two testbenches to verify that its reset and latching behavior are
+correct.
 
 #### Case 1
 
 In the first test, the design is initially reset and then stimulated with non-
-overlapping high states of `clk` and `d`. The final state of the design must
-be low at the end of this test.
+overlapping high states of `clk` and `d`. Its final state must be logic low.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example1.svg)
 
 #### Case 2
 
-The DUT is then fed input stimuli with overlapping `clk` and `d` high states
-and expected to be in a logic high state at the end of the simulation.
+Here the design is stimulated with `clk` and `d` signals that have overlapping high
+states and the design is expected to transition to logic high.
 
 ![Example 2](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example2.svg)
 
 ### 3. Running Bisection
 
-After verifying that the design functions correctly in test cases 1 and 2,
-bisection can ran by executing
+Once the behavior of the design is verified by running the tests above, bisection
+can be started by running:
 
 ```
 ./bisect-tau bisect mydut.cir
 ```
 
-This will start a bisection search procedure to find the tipping point between
-test cases 1 and 2. The transition time of `d` will be varied to bring the
-design into progressively deeper metastable states and calculate it transition
-or "settling" time. During bisection, the tool will output a printout of
-bisection parameters similar to the below:
+This will start bisection search to find the tipping point between test cases
+1 and 2.
+
+This will start an incremental process to bring the transition time of `d`
+closer to the tipping point between logic low and high final states. The tool
+will run a spice simulation per bisection round and output a trace similar to
+the below:
 
 ```
 checking if ngspice is installed ... pass
@@ -154,16 +172,16 @@ round (25/50), window size = 5.96e-16 sec, settling time = 5.25e-09 sec
 ...
 ```
 
-If bisection is progressing correcting then window size will shrink by a
-factor of 2 per round and settling time will increase in small increments
-(although not at the beginning or very end of the process).
+If bisection is progressing correctly then window size will shrink by a factor
+of 2 and settling time will increase slightly on each round (although not at
+the beginning or very end of the process).
 
-A waveform window will also appear and show plots of signals `q` and `qn` as
-the design is pushed into deeper metastable states.
+A waveform window will also appear and show plots of `q` and `qn` as the
+design is pushed into deeper metastable states.
 
 ### 4. Calculating Tau
 
-Once bisection is complete, execute:
+Once bisection is complete, run:
 
 ```
 ./bisect-tau calculate
@@ -182,6 +200,6 @@ Close figure window to exit.
 ```
 
 For a quick sanity check, the tool will also produce a semi-log plot of window
-size vs. settling time. If bisection was successful, there will be a clear
+size vs. settling time. If everything went correctly, there will be a clear
 straight line segment showing the exponential relationship from which Tau and
 Tw were calculated.
