@@ -28,12 +28,12 @@ spice circuit.
 
 The Design under Test (DUT) (latch/flip-flop/arbiter circuit) must be a spice
 sub-circuit with the input ports: `reset`, `clk` and `d` and output ports: `q`
-and `qn`.
+and `qn` as shown in the block diagram below.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/diagram.svg)
 
 The outputs `q` and `qn` indicate the logical state of the DUT (logic high
-when `q` is larger than `qn` and logic low otherwise).
+when `q > qn` and logic low otherwise).
 
 The DUT can be either a level or an edge-sensitive device and must behave in
 the following way:
@@ -45,7 +45,7 @@ the following way:
 indicated by `d`.
 
 The DUT must be prepared as a spice sub-circuit and have the required ports so
-minimum definition would be something like:
+a minimum definition would be something like:
 
 ```
 .SUBCKT mydut D Q QN CLK RESET
@@ -55,9 +55,12 @@ minimum definition would be something like:
 .ENDS mydut
 ```
 
-The sub-circuit definition (and any denpendencies) must be listed in the spice
-circuit file `dut.cir` at the root directory. The file must also define the
-supply voltage and instantiate the design. For example:
+Latch spice circuits are usually part of the backend of cell libraries and can
+probably be passed to the tool with little or no modification. The circuit
+must be included in a wrapper spice file that (1) defines any dependencies
+such as transistor models etc., (2) instantiates the design naming naming its
+ports (`reset`, `clk`, `d`, `q` and `qn`) and (3) defines the supply voltage.
+The file would therefore look something like the below:
 
 ```
 .param vdd_voltage 	= 1
@@ -68,6 +71,11 @@ supply voltage and instantiate the design. For example:
 
 x1 D Q QN CLK RESET mydut
 ```
+
+For details on defining sub-circuits refer to [ngspice users manual section 2.4
+(".SUBCKT Subcircuits")](http://ngspice.sourceforge.net/docs/ngspice-manual.pdf).
+
+(details on examples directory)
 
 ### 2. Running Checks
 
