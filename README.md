@@ -153,9 +153,16 @@ Once the behavior of the design is verified by running the tests above, run:
 ```
 
 This will start bisection search to find the tipping point between test cases
-1 and 2. The tool will vary the transition time of `d` to bring it closer to
-the tipping point separating the logic low and high final states. During this
-process, the tool will output a trace similar to the below:
+1 and 2. In test case 1, the high-to-low transition of `d` at 4ns was *before*
+the rising edge of `clk` at 5ns so the design remained in a *logic low* state.
+On the other hand, the transition of `d` in test case 2 was at 6ns (*after*
+the rising edge of `clk`) and so the design transitioned to *logic high*.
+Within the interval [4ns, 6ns] lies the tipping point separating logic high
+and low and approaching this point will make the circuit take longer to decide
+which logical state to settle to. The tool will vary the transition time of
+`d` to bring the design closer to this point and measure the corresponding
+increase in its output delay. During this process, the tool will output a
+trace similar to the below:
 
 ```
 checking if ngspice is installed ... pass
