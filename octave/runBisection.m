@@ -1,5 +1,13 @@
 function runBisection(dutFile)
 
+resFile = getOutputFile('bisection-output.mat');
+
+if exist(resFile, 'file')
+
+    delete(resFile);
+
+end
+
 if exist(getOutputFile('spice-step-001.bin'), 'file')
 
     delete(getOutputFile('spice-step-*.bin'));
@@ -96,6 +104,8 @@ for i=1:rounds
 
     bisectionResults(end+1, :) = [H L m R ts]; %#ok<AGROW>
 
+    save(resFile, 'bisectionResults');
+
     plot(ts, 0, 'ok');
 
     %title(sprintf('m = %1.10f ns', m * 1e9));
@@ -113,8 +123,6 @@ for i=1:rounds
     end
 
 end
-
-save(getOutputFile('bisection-output.mat'), 'bisectionResults');
 
 end
 

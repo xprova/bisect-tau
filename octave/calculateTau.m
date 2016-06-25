@@ -4,7 +4,15 @@ useHigh = 1; % use high-resolving or low-resolving bisection steps
 
 forceMeasureRange = []; % range to measure tau over (empty for auto)
 
-load(getOutputFile('bisection-output.mat'));
+resFile = getOutputFile('bisection-output.mat');
+
+if ~exist(resFile, 'file')
+
+    error('Could not find bisection results. Before using this command, run ./bisect-tau bisect mydut.cir');
+
+end
+
+load(resFile);
 
 h = bisectionResults;
 
