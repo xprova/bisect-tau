@@ -1,26 +1,26 @@
 ## bisect-tau
 
 This is a command line tool to calculate the metastability resolution time
-constant Tau of a spice latch circuit (or any bistable circuit that behaves
-like a latch, e.g. an arbiter). It is based on Octave (a GNU Matlab clone) and
-ngspice (an open-source free version of spice).
+constant (Tau) of a latch/arbiter/flip-flop circuit. It is based on
+[Octave](https://www.gnu.org/software/octave/) (a GNU Matlab clone) and
+[ngspice](http://ngspice.sourceforge.net/) (an open-source version of spice).
 
-For background information on metastability, MTBF calculations, bisection and
-synchronization reliability refer to the paper:
+For background information on metastability, MTBF calculations and the
+bisection process used to calculate Tau, refer to the paper:
 
 * Jones, Ian W., Suwen Yang, and Mark Greenstreet. "[Synchronizer behavior and
 analysis.](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5010342)"
 Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE Symposium on.
 IEEE, 2009.
 
-The tool uses bisection search to bring the transition time of the design's
-data input closer and closer to the tipping time point separating the final
-states of logic high and low. With each step, the design is brought into
-deeper metastable states and its output delay is increased. After 50 rounds of
-bisection, the tool fits an exponential function to the relationship between
-window size (the time difference between input transitions and the tipping
-point) and output delay. The fit is subsequently used to calculate the MTBF
-parameters Tau and Tw.
+The tool uses bisection search to find the tipping point separating the states
+logic high and low in a range of data input transition times. In each round of
+bisection, the design is brought into a deeper metastable state and its output
+delay is calculated. After 50 rounds of bisection the tool fits an
+exponential function to the window size (the time difference between input
+transitions and the tipping point) and output delay data measured during
+bisection. The fit is subsequently used to calculate the MTBF parameters Tau
+and Tw of the characterized circuit.
 
 ### Quick Demo
 
@@ -30,12 +30,35 @@ Clone this repo, navigate to the tool directory and run:
 ./bisect-tau bisect examples/latch.cir
 ```
 
-This will run bisection on a test latch circuit. Once it completes, you can
-calculate Tau and Tw by running:
+This will run bisection on an example latch circuit that is provided with the
+tool. During bisection the tool will produce a plot (like the below) showing
+the superimposed outputs `q` and `qn` of the characterized circuit as it is
+being pushed into deeper metastability.
+
+![Metastable Waveforms](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/fig_metastable.svg)
+
+Once bisection is complete, run:
 
 ```
 ./bisect-tau calculate
 ```
+
+The tool will now fit an exponential relationship between input window size
+and output delay data collected during the last run bisection procedure. It
+will produce an output plot of the data, the exponential fit and print out the
+calculated values of the parameters Tau and Tw:
+
+![Exponential Fit](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/fig_exponential.svg)
+
+```
+Results:
+
+Tau = 2.519e-11 sec
+Tw  = 1.548e-12 sec
+```
+
+Follow the guidelines in the next section to learn how to use with tool to
+characterize your own circuits.
 
 ### Calculating Tau for your Design
 
@@ -59,7 +82,7 @@ the following way:
 1. When `reset` is pulled high, the DUT must transition to logic low.
 
 2. When `reset` is low and `clk` is high (or at a low-to-high transition of
-`clk` for edge-sensitive devics) the DUT must transition to the logic state
+`clk` for edge-sensitive devices) the DUT must transition to the logic state
 indicated by `d`.
 
 The DUT must be prepared as a spice sub-circuit and have the required ports so
@@ -73,8 +96,8 @@ a minimum definition would be something like:
 .ENDS mydut
 ```
 
-Spice circuits are usually part of the backend of cell libraries and can
-usually be used with the tool with little or no modification.
+Spice circuits are part of the backend of cell libraries and can usually be
+used with the tool with little to no modification.
 
 After locating the spice sub-circuit definition for the bistable device
 to be characterized, an instance of the latch must be declared in a wrapper
@@ -109,7 +132,7 @@ For details on defining sub-circuits refer to [Ngspice Users Manual - Section 2.
 (".SUBCKT Subcircuits")](http://ngspice.sourceforge.net/docs/ngspice-manual.pdf).
 
 The directory `examples` contains sample latch files that can be inspected or
-used to test run the rool.
+used to test run the tool.
 
 #### 2. Running Checks
 
