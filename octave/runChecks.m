@@ -71,7 +71,9 @@ L = 0;
 
 testbench = prepareBisectionTestbench(dutFile, L);
 
-sim = simSpice(testbench, getOutputFile('spice-check-low.bin'), 1);
+[sim, spiceErrMsg] = simSpice(testbench, getOutputFile('spice-check-low.bin'), 1);
+
+msg = 'The specified DUT failed test Case 1, for details refer to https://github.com/xprova/bisect-tau';
 
 if ~isempty(sim)
 
@@ -83,6 +85,10 @@ if ~isempty(sim)
 
             result = 0; errMsg = ''; return;
 
+        else
+
+            result = 1; errMsg = msg; return;
+
         end
 
     end
@@ -91,7 +97,7 @@ end
 
 result = 1;
 
-errMsg = 'The specified DUT failed test Case 1, for details refer to https://github.com/xprova/bisect-tau';
+errMsg = sprintf('ngspice terminated with non-zero exit code\n\nngspice output:\n\n%s', spiceErrMsg);
 
 end
 
@@ -103,7 +109,9 @@ H = 10e-9;
 
 testbench = prepareBisectionTestbench(dutFile, H);
 
-sim = simSpice(testbench, getOutputFile('spice-check-high.bin'), 1);
+[sim, spiceErrMsg] = simSpice(testbench, getOutputFile('spice-check-high.bin'), 1);
+
+msg = 'The specified DUT failed test Case 2, for details refer to https://github.com/xprova/bisect-tau';
 
 if ~isempty(sim)
 
@@ -113,9 +121,13 @@ if ~isempty(sim)
 
       if q(end) > qn(end)
 
-          result = 0; errMsg = ''; return
+            result = 0; errMsg = ''; return;
 
-      end
+        else
+
+            result = 1; errMsg = msg; return;
+
+        end
 
     end
 
@@ -123,7 +135,7 @@ end
 
 result = 1;
 
-errMsg = 'The specified DUT failed test Case 2, for details refer to https://github.com/xprova/bisect-tau';
+errMsg = sprintf('ngspice terminated with non-zero exit code\n\nngspice output:\n\n%s', spiceErrMsg);
 
 end
 

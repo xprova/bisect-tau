@@ -1,4 +1,4 @@
-function sim = simSpice(testbenchCode, binFile, quiet)
+function [sim, errMsg] = simSpice(testbenchCode, binFile, quiet)
 
 if nargin < 3; quiet = 0; end
 
@@ -32,11 +32,13 @@ if quiet
 
     if isunix
 
-        cmd = strcat(cmd, ' >> /dev/null 2>&1');
+        %cmd = strcat(cmd, ' >> /dev/null 2>&1');
+
+        cmd = strcat(cmd, ' 2>&1');
 
     end
 
-    [exitCode, ~] = system(cmd);
+    [exitCode, errMsg] = system(cmd);
 
 else
 
@@ -44,11 +46,9 @@ else
 
 end
 
-delete(cmdFile);
-
 if exitCode
 
-    warning('ngspice terminated with non-zero exit code');
+    %error('ngspice terminated with non-zero exit code');
 
     sim = [];
 
@@ -57,6 +57,8 @@ else
     sim = readSpiceBin(binFile);
 
 end
+
+delete(cmdFile);
 
 end
 
