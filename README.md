@@ -1,16 +1,17 @@
 ## bisect-tau
 
-This is a command line tool based on Octave (a GNU Matlab clone) and ngspice
-(an open-source free version of spice) to calculate the metastability
-resolution time constant Tau of a spice latch circuit (or any bistable circuit
-that behaves like a latch, e.g. an arbiter).
+This is a command line tool to calculate the metastability resolution time
+constant Tau of a spice latch circuit (or any bistable circuit that behaves
+like a latch, e.g. an arbiter). It is based on Octave (a GNU Matlab clone) and
+ngspice (an open-source free version of spice).
 
-For background information on metastability, MTBF calculations and a good
-review of issues concerning synchronizer reliability refer to the paper:
+For background information on metastability, MTBF calculations, bisection and
+synchronization reliability refer to the paper:
 
-Jones, Ian W., Suwen Yang, and Mark Greenstreet. "Synchronizer behavior and
-analysis." Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE
-Symposium on. IEEE, 2009.
+* Jones, Ian W., Suwen Yang, and Mark Greenstreet. "[Synchronizer behavior and
+analysis.](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5010342)"
+Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE Symposium on.
+IEEE, 2009.
 
 The tool uses bisection search to bring the transition time of the design's
 data input closer and closer to the tipping time point separating the final
@@ -18,13 +19,29 @@ states of logic high and low. With each step, the design is brought into
 deeper metastable states and its output delay is increased. After 50 rounds of
 bisection, the tool fits an exponential function to the relationship between
 window size (the time difference between input transitions and the tipping
-point) and output delay then uses the fit to calculate Tau (as well as the
-parameter Tw that is also necessary for MTBF calculations).
+point) and output delay. The fit is subsequently used to calculate the MTBF
+parameters Tau and Tw.
 
-The sections below describe the steps to calculate Tau for a given bistable
-spice circuit.
+### Quick Demo
 
-### 1. Preparing the DUT
+Clone this repo, navigate to the tool directory and run:
+
+```
+./bisect-tau bisect examples/latch.cir
+```
+
+This will run bisection on a test latch circuit. Once it completes, you can calculate Tau and Tw by running:
+
+```
+./bisect-tau calculate
+```
+
+### Calculating Tau for your Design
+
+The sub-sections below describe the steps to calculate Tau for a given
+bistable spice circuit.
+
+#### 1. Preparing the DUT
 
 The Design under Test (DUT) (latch/flip-flop/arbiter circuit) must be a spice
 sub-circuit with the input ports: `reset`, `clk` and `d` and output ports: `q`
@@ -33,7 +50,7 @@ and `qn` as shown in the block diagram below.
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/diagram.svg)
 
 The outputs `q` and `qn` indicate the logical state of the DUT (logic high
-when `q > qn` and logic low otherwise).
+when `q` > `qn` and logic low otherwise).
 
 The DUT can be either a level or an edge-sensitive device and must behave in
 the following way:
@@ -93,7 +110,7 @@ For details on defining sub-circuits refer to [Ngspice Users Manual - Section 2.
 The directory `examples` contains sample latch files that can be inspected or
 used to test run the rool.
 
-### 2. Running Checks
+#### 2. Running Checks
 
 Once the spice file is prepared, the design behavior can be checked by
 running:
@@ -106,21 +123,21 @@ where `mydut.cir` is the wrapper spice file. This will simulate the design
 using two testbenches to verify that its reset and latching behavior are
 correct.
 
-#### Case 1
+##### Case 1
 
-In the first test, the design is initially reset and then stimulated with non-
-overlapping high states of `clk` and `d`. Its final state must be logic low.
+In the first test, the design is initially reset and then stimulated with non-overlapping high states of `clk` and `d`. The final state of the design at the
+end of this simulation must be logic low.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example1.svg)
 
-#### Case 2
+##### Case 2
 
 Here the design is stimulated with `clk` and `d` signals that have overlapping high
-states and the design is expected to transition to logic high.
+states. The design's final state must be logic low in this test.
 
 ![Example 2](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example2.svg)
 
-### 3. Running Bisection
+#### 3. Running Bisection
 
 Once the behavior of the design is verified by running the tests above, bisection
 can be started by running:
@@ -179,7 +196,7 @@ the beginning or very end of the process).
 A waveform window will also appear and show plots of `q` and `qn` as the
 design is pushed into deeper metastable states.
 
-### 4. Calculating Tau
+#### 4. Calculating Tau
 
 Once bisection is complete, run:
 
