@@ -30,7 +30,8 @@ Clone this repo, navigate to the tool directory and run:
 ./bisect-tau bisect examples/latch.cir
 ```
 
-This will run bisection on a test latch circuit. Once it completes, you can calculate Tau and Tw by running:
+This will run bisection on a test latch circuit. Once it completes, you can
+calculate Tau and Tw by running:
 
 ```
 ./bisect-tau calculate
@@ -125,10 +126,11 @@ correct.
 
 ##### Case 1
 
-In the first test, the design is initially reset and then stimulated with non-overlapping high states of `clk` and `d`. Since `clk` and `d` do not overlap,
-the design must retain its state after reset (i.e. logic low) till the end  of
-the simulation. The test will fail if the design does not reset or is by other
-means found to be in a logic high state when the simulation ends.
+In the first test, the design is initially reset and then stimulated with
+non-overlapping high states of `clk` and `d`. Since `clk` and `d` do not
+overlap, the design must retain its state after reset (i.e. logic low) till
+the end  of the simulation. The test will fail if the design does not reset or
+is by other means found to be in a logic high state when the simulation ends.
 
 This test may also fail if ngspice terminates with a non-zero exit code. In
 this case the tool will output both stdout and stderr of ngspice to enable the

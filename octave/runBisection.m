@@ -90,7 +90,17 @@ for i=1:rounds
 
     testbench = prepareBisectionTestbench(dutFile, m);
 
-    sim = simSpice(testbench, binFile, 1);
+    [sim, errMsg] = simSpice(testbench, binFile, 1);
+
+    if isempty(sim)
+
+        disp('ngspice terminated with non-zero exit code')
+
+        fprintf('\nngspice output:\n\n%s', errMsg);
+
+        return
+
+    end
 
     [t, q, qn] = getSignals(sim, 'time', 'q', 'qn');
 

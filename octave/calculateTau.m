@@ -1,18 +1,28 @@
 function calculateTau()
 
+plotDemoFigure = 0;
+
 useHigh = 1; % use high-resolving or low-resolving bisection steps
 
 forceMeasureRange = []; % range to measure tau over (empty for auto)
 
 resFile = getOutputFile('bisection-output.mat');
 
-if ~exist(resFile, 'file')
+if plotDemoFigure
 
-    error('Could not find bisection results. Before using this command, run ./bisect-tau bisect mydut.cir');
+    bisectionResults = load('C:\cygwin64\tmp\bisect-tau\output\bisection-output.mat', '-ascii');
+
+else
+
+    if ~exist(resFile, 'file')
+
+        error('Could not find bisection results. Before using this command, run ./bisect-tau bisect mydut.cir');
+
+    end
+
+    load(resFile);
 
 end
-
-load(resFile);
 
 h = bisectionResults;
 
@@ -95,9 +105,19 @@ end
 
 title(strTau);
 
-while ishandle(fh);
+if plotDemoFigure
 
-    drawnow
+    makeLines1pt();
+
+    psvg('fig_exponential.svg', [10 8]);
+
+else
+
+    while ishandle(fh);
+
+        drawnow
+
+    end
 
 end
 
