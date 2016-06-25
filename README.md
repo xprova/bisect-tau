@@ -125,34 +125,37 @@ correct.
 
 ##### Case 1
 
-In the first test, the design is initially reset and then stimulated with non-overlapping high states of `clk` and `d`. The final state of the design at the
-end of this simulation must be logic low.
+In the first test, the design is initially reset and then stimulated with non-overlapping high states of `clk` and `d`. Since `clk` and `d` do not overlap,
+the design must retain its state after reset (i.e. logic low) till the end  of
+the simulation. The test will fail if the design does not reset or is by other
+means found to be in a logic high state when the simulation ends.
+
+This test may also fail if ngspice terminates with a non-zero exit code. In
+this case the tool will output both stdout and stderr of ngspice to enable the
+user to debug their spice circuit.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example1.svg)
 
 ##### Case 2
 
-Here the design is stimulated with `clk` and `d` signals that have overlapping high
-states. The design's final state must be logic low in this test.
+Here the design is stimulated with `clk` and `d` signals that have overlapping
+high states. The design is now expected to be in a logic high state when the
+simulation ends, otherwise the test will fail.
 
 ![Example 2](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/example2.svg)
 
 #### 3. Running Bisection
 
-Once the behavior of the design is verified by running the tests above, bisection
-can be started by running:
+Once the behavior of the design is verified by running the tests above, run:
 
 ```
 ./bisect-tau bisect mydut.cir
 ```
 
 This will start bisection search to find the tipping point between test cases
-1 and 2.
-
-This will start an incremental process to bring the transition time of `d`
-closer to the tipping point between logic low and high final states. The tool
-will run a spice simulation per bisection round and output a trace similar to
-the below:
+1 and 2. The tool will vary the transition time of `d` to bring it closer to
+the tipping point separating the logic low and high final states. During this
+process, the tool will output a trace similar to the below:
 
 ```
 checking if ngspice is installed ... pass
