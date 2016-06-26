@@ -1,7 +1,7 @@
 ## bisect-tau
 
 This is a command line tool to calculate the metastability resolution time
-constant (Tau) of a latch/arbiter/flip-flop circuit. It is based on
+constant (Tau) of a latch/arbiter/flip-flop circuit. It's based on
 [Octave](https://www.gnu.org/software/octave/) (a GNU Matlab clone) and
 [ngspice](http://ngspice.sourceforge.net/) (an open-source version of spice).
 
@@ -13,14 +13,13 @@ analysis.](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5010342)"
 Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE Symposium on.
 IEEE, 2009.
 
-The tool uses bisection search to find the tipping point separating the states
-logic high and low in a range of data input transition times. In each round of
-bisection, the design is brought into a deeper metastable state and its output
-delay is calculated. After 50 rounds of bisection the tool fits an
-exponential function to the window size (the time difference between input
-transitions and the tipping point) and output delay data measured during
-bisection. The fit is subsequently used to calculate the MTBF parameters Tau
-and Tw of the characterized circuit.
+The tool uses bisection search to find the tipping point between early and
+late input transition times of a bistable circuit. In each bisection round the
+design is brought into a deeper metastable state and its output delay is
+calculated. After 50 rounds the tool fits an exponential function to the
+window size (the time difference between input transition and the tipping
+point) and output delay data measured during bisection. The fit is then used
+to calculate the MTBF parameters Tau and Tw of the characterized circuit.
 
 ### Quick Demo
 
@@ -31,22 +30,22 @@ Clone this repo, navigate to the tool directory and run:
 ```
 
 This will run bisection on an example latch circuit that is provided with the
-tool. During bisection the tool will produce a plot (like the below) showing
-the superimposed outputs `q` and `qn` of the characterized circuit as it is
-being pushed into deeper metastability.
+tool. During bisection the tool will produce a figure (like the below) showing
+the superimposed plots of the circuit outputs `q` and `qn` as the circuit is
+pushed into deeper metastability.
 
 ![Metastable Waveforms](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/fig_metastable.svg)
 
-Once bisection is complete, run:
+This will take few minutes to complete. Once done, run the command:
 
 ```
 ./bisect-tau calculate
 ```
 
-The tool will now fit an exponential relationship between input window size
-and output delay data collected during the last run bisection procedure. It
-will produce an output plot of the data, the exponential fit and print out the
-calculated values of the parameters Tau and Tw:
+The tool will now fit an exponential relationship to the input window size and
+output delay data collected during bisection. It will produce an output plot
+of the data, the exponential fit and print out the calculated values of the
+parameters Tau and Tw:
 
 ![Exponential Fit](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/fig_exponential.svg)
 
@@ -62,14 +61,13 @@ characterize your own circuits.
 
 ### Calculating Tau for your Design
 
-The sub-sections below describe the steps to calculate Tau for a given
-bistable spice circuit.
+There are four basic steps to calculate Tau for your spice bistable circuit:
 
 #### 1. Preparing the DUT
 
 The Design under Test (DUT) (latch/flip-flop/arbiter circuit) must be a spice
 sub-circuit with the input ports: `reset`, `clk` and `d` and output ports: `q`
-and `qn` as shown in the block diagram below.
+and `qn` as shown in the diagram below.
 
 ![Example 1](https://cdn.rawgit.com/xprova/bisect-tau/master/figures/diagram.svg)
 
@@ -81,29 +79,30 @@ the following way:
 
 1. When `reset` is pulled high, the DUT must transition to logic low.
 
-2. When `reset` is low and `clk` is high (or at a low-to-high transition of
-`clk` for edge-sensitive devices) the DUT must transition to the logic state
-indicated by `d`.
+2. When `reset` is low and `clk` is pulled high (or at a low-to-high
+transition of `clk` for edge-sensitive devices) the DUT must transition to the
+state indicated by `d`.
 
-The DUT must be prepared as a spice sub-circuit and have the required ports so
-a minimum definition would be something like:
+A minumum definition of the DUT would be something like:
 
 ```
 .SUBCKT mydut D Q QN CLK RESET
 
-	* spice components of dut defined here
+	* dut components and their connections defined here
 
 .ENDS mydut
 ```
 
+Note: ports don't need to be defined in order and are case insensitive.
+
 Spice circuits are part of the backend of cell libraries and can usually be
 used with the tool with little to no modification.
 
-After locating the spice sub-circuit definition for the bistable device
-to be characterized, an instance of the latch must be declared in a wrapper
-spice file. The wrapper must:
+After locating the spice sub-circuit definition for the latch (or bistable)
+design to be characterized, an instance of the design must be declared in a
+wrapper spice file. The wrapper must:
 
-1. Define any DUT dependencies (e.g. transistor models)
+1. Define any design dependencies (e.g. transistor models)
 2. Define the supply voltage
 3. Instantiate the design naming its ports `reset`, `clk`, `d`, `q` and `qn`
 
@@ -117,7 +116,7 @@ For example:
 
 * include definition of cell latchx1:
 
-.include "./mydut/other_depencies.cir"
+.include "./mydut/latchx1.cir"
 
 * specify supply voltage in volts:
 
@@ -136,22 +135,22 @@ used to test run the tool.
 
 #### 2. Running Checks
 
-Once the spice file is prepared, the design behavior can be checked by
-running:
+After preparing the spice wrapper file that instantiates the design, its
+reset and latching behavior must be verified by running:
 
 ```
 ./bisect-tau check mydut.cir
 ```
 
 where `mydut.cir` is the wrapper spice file. This will simulate the design
-using two testbenches to verify that its reset and latching behavior are
-correct.
+using two testbenches to verify that it's behaving in a correct way and can be
+used in bisection search.
 
 ##### Case 1
 
 In the first test, the design is initially reset and then stimulated with
 non-overlapping high states of `clk` and `d`. Since `clk` and `d` do not
-overlap, the design must retain its state after reset (i.e. logic low) till
+overlap, the design must retain its post-reset state (i.e. logic low) until
 the end  of the simulation. The test will fail if the design does not reset or
 is by other means found to be in a logic high state when the simulation ends.
 
