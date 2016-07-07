@@ -21,9 +21,25 @@ window size (the time difference between input transition and the tipping
 point) and output delay data measured during bisection. The fit is then used
 to calculate the MTBF parameters Tau and Tw of the characterized circuit.
 
+### Installation
+
+First, install the dependencies Octave and ngspice. For Ubuntu and apt-based
+linux distros run:
+
+```
+sudo apt-get install octave
+sudo apt-get install ngspice
+```
+
+Then either clone this repo by executing:
+
+`git clone https://github.com/xprova/bisect-tau`
+
+or download the source code to your machine manually.
+
 ### Quick Demo
 
-Clone this repo, navigate to the tool directory and run:
+Navigate to the tool directory and run:
 
 ```
 ./bisect-tau bisect examples/latch.cir
@@ -56,8 +72,9 @@ Tau = 2.519e-11 sec
 Tw  = 1.548e-12 sec
 ```
 
-Follow the guidelines in the next section to learn how to use with tool to
-characterize your own circuits.
+Follow the guidelines in the following sections to learn how to use with tool
+to characterize your own circuits.
+
 
 ### Calculating Tau for your Design
 
