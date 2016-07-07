@@ -13,9 +13,9 @@ analysis.](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5010342)"
 Asynchronous Circuits and Systems, 2009. ASYNC'09. 15th IEEE Symposium on.
 IEEE, 2009.
 
-The tool uses bisection search to find the tipping point between early and
-late input transition times of a bistable circuit. In each bisection round the
-design is brought into a deeper metastable state and its output delay is
+The tool uses bisection search to find the tipping point between an early and
+a late input transition times of a bistable circuit. In each bisection round
+the design is brought into a deeper metastable state and its output delay is
 calculated. After 50 rounds the tool fits an exponential function to the
 window size (the time difference between input transition and the tipping
 point) and output delay data measured during bisection. The fit is then used
@@ -33,7 +33,9 @@ sudo apt-get install ngspice
 
 Then either clone this repo by executing:
 
-`git clone https://github.com/xprova/bisect-tau`
+```
+git clone https://github.com/xprova/bisect-tau
+```
 
 or download the source code to your machine manually.
 
