@@ -273,3 +273,33 @@ For a quick sanity check, the tool will also produce a semi-log plot of window
 size vs. settling time. If everything went correctly, there will be a clear
 straight line segment showing the exponential relationship from which Tau and
 Tw were calculated.
+
+### Using Vagrant
+
+Since `bisect-tau` requires octave which itself has a lot of dependencies it
+may be more convenient to run `bisect-tau` through
+[Vagrant](https://www.vagrantup.com/). Vagrant is a software virtualization
+tool built on top on VirtualBox that makes it possible to setup a pre-
+configured virtual machine with just few commands. This repo contains a
+Vagrantfile with the required configuration to prepare an Ubuntu 14.04 box
+with ngspice and octave installed, ready to use `bisect-tau`.
+
+Make sure you have both [VirtualBox](https://www.virtualbox.org/) and
+[Vagrant](https://www.vagrantup.com/downloads.html) installed then execute:
+
+```
+vagrant up
+vagrant ssh
+```
+
+and once inside the virtual machine:
+
+```
+cd /vagrant
+./bisect-tau bisect examples/latch.cir
+```
+
+After finishing with the tool you can log off and then run `vagrant destroy`
+to turn off and delete the virtual machine (this will remove any files created
+on the machine, unless they were stored in `/vagrant` which is a mapping of
+the current directory on the host machine).
