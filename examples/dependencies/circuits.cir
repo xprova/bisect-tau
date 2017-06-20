@@ -118,11 +118,6 @@
 	M1 m1 RESET 0 0 N1 l=45n w=180n
 	M2 m2 RESET 0 0 N1 l=45n w=180n
 
-	* node capacitances:
-
-	c1 m1 0 1e-15
-	c2 m2 0 1e-15
-
 .ENDS MUTEX
 
 .SUBCKT MUTEX_WRAPPER D Q QN CLK RESET vdd
