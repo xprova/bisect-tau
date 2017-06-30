@@ -42,6 +42,8 @@ if nargin > 1
 
             runBisection(dutFile);
 
+            display('Press any key to exit ...'); pause;
+
             return;
 
         end
