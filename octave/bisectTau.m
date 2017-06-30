@@ -14,6 +14,8 @@ function bisectTau(varargin)
 
 % first, change Octave's work dir to the tool's home dir
 
+graphics_toolkit gnuplot
+
 mPath = fileparts(mfilename('fullpath'));
 
 toolPath = fullfile(mPath, '..');
